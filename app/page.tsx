@@ -148,6 +148,9 @@ export default function Home() {
         </g>
       </svg>
 
+      {/* Side decorations — only on large screens where there's empty real estate */}
+      <SideAccents />
+
       <div className="relative mx-auto max-w-3xl px-5 py-12 sm:py-20">
         {/* Hero */}
         <header className="text-center">
@@ -343,6 +346,61 @@ function Step({ n, title, body }: { n: number; title: string; body: string }) {
       </div>
       <h3 className="mt-3 text-sm font-semibold text-slate-900">{title}</h3>
       <p className="mt-1 text-sm text-slate-600">{body}</p>
+    </div>
+  );
+}
+
+function SideAccents() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 hidden lg:block">
+      {/* Giant watermark numerals at the far edges */}
+      <div className="absolute left-[-2rem] top-[24%] select-none text-[14rem] font-black leading-none tracking-tighter text-teal-900/[0.05] sm:text-[16rem]">
+        75
+      </div>
+      <div className="absolute right-[-2rem] bottom-[10%] select-none text-[14rem] font-black leading-none tracking-tighter text-rose-900/[0.05] sm:text-[16rem]">
+        1%
+      </div>
+
+      {/* Left-side floating chips */}
+      <div className="absolute left-[3%] top-[18%] -rotate-6 rounded-xl border border-teal-200 bg-white/70 px-3 py-2 shadow-md backdrop-blur">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-teal-700">Federal rule</div>
+        <div className="font-mono text-sm font-bold text-slate-900">ACA §2719</div>
+        <div className="mt-0.5 text-[11px] text-slate-600">External review · 4 months</div>
+      </div>
+      <div className="absolute left-[5%] top-[42%] rotate-3 rounded-xl border border-emerald-200 bg-white/70 px-3 py-2 shadow-md backdrop-blur">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-emerald-700">Self-funded plan</div>
+        <div className="font-mono text-sm font-bold text-slate-900">ERISA §503</div>
+        <div className="mt-0.5 text-[11px] text-slate-600">Full & fair review</div>
+      </div>
+      <div className="absolute left-[2%] top-[66%] -rotate-3 rounded-xl border border-amber-200 bg-white/75 px-3 py-2 shadow-md backdrop-blur">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-amber-700">Internal appeal</div>
+        <div className="font-mono text-sm font-bold text-slate-900">180-day clock</div>
+        <div className="mt-0.5 text-[11px] text-slate-600">From denial date</div>
+      </div>
+
+      {/* Right-side floating chips */}
+      <div className="absolute right-[3%] top-[22%] rotate-3 rounded-xl border border-cyan-200 bg-white/70 px-3 py-2 shadow-md backdrop-blur">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-cyan-700">No Surprises Act</div>
+        <div className="font-mono text-sm font-bold text-slate-900">NSA §2799</div>
+        <div className="mt-0.5 text-[11px] text-slate-600">Out-of-network protection</div>
+      </div>
+      <div className="absolute right-[4%] top-[46%] -rotate-2 rounded-xl border border-violet-200 bg-white/70 px-3 py-2 shadow-md backdrop-blur">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-violet-700">Medicare</div>
+        <div className="font-mono text-sm font-bold text-slate-900">42 CFR §422</div>
+        <div className="mt-0.5 text-[11px] text-slate-600">Part C appeals</div>
+      </div>
+      <div className="absolute right-[2%] top-[70%] rotate-6 rounded-xl border border-rose-200 bg-white/75 px-3 py-2 shadow-md backdrop-blur">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-rose-700">Result</div>
+        <div className="font-mono text-sm font-bold text-emerald-700">OVERTURNED</div>
+        <div className="mt-0.5 text-[11px] text-slate-600">62% of internal appeals</div>
+      </div>
+
+      {/* Vertical accent lines with tick marks (right side) */}
+      <div className="absolute right-[7%] top-[12%] flex h-[420px] flex-col items-center gap-2">
+        <div className="text-[10px] font-mono font-semibold text-teal-700/70">DAY 0</div>
+        <div className="h-full w-px bg-gradient-to-b from-teal-400/60 via-amber-400/40 to-rose-400/30" />
+        <div className="text-[10px] font-mono font-semibold text-rose-700/70">DAY 180</div>
+      </div>
     </div>
   );
 }

@@ -75,11 +75,6 @@ export default function ResultCard({ data }: { data: OverturnResultT }) {
 
   return (
     <div className="relative mx-auto max-w-3xl px-5 py-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-teal-50/40 via-transparent to-transparent"
-      />
-
       <header className="reveal" style={{ animationDelay: "0ms" }}>
         <a href="/" className="text-sm font-medium text-teal-700 hover:underline">
           ← New appeal
@@ -91,27 +86,65 @@ export default function ResultCard({ data }: { data: OverturnResultT }) {
 
       {/* Gauge */}
       <section
-        className={`reveal mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm ring-1 ${gaugeRing(data.win_probability)}`}
+        className={`reveal mt-8 rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-lg shadow-teal-900/[0.05] backdrop-blur ring-1 ${gaugeRing(data.win_probability)}`}
         style={{ animationDelay: "60ms" }}
       >
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
+        <div className="flex flex-wrap items-center justify-between gap-6">
+          {/* Circular progress ring */}
+          <div className="relative h-44 w-44 shrink-0">
+            <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
+              <circle
+                cx="60"
+                cy="60"
+                r="50"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="10"
+                className="text-slate-200"
+              />
+              <circle
+                cx="60"
+                cy="60"
+                r="50"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="10"
+                strokeLinecap="round"
+                strokeDasharray={`${2 * Math.PI * 50}`}
+                strokeDashoffset={`${2 * Math.PI * 50 * (1 - animatedScore / 100)}`}
+                className={`${gaugeColor(data.win_probability)} transition-[stroke-dashoffset] duration-100`}
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className={`text-5xl font-bold tabular-nums leading-none ${gaugeColor(data.win_probability)}`}>
+                {Math.round(animatedScore)}
+              </span>
+              <span className="mt-1 text-xs font-medium uppercase tracking-wider text-slate-500">/ 100</span>
+            </div>
+          </div>
+
+          {/* Right: label + badge + confidence */}
+          <div className="flex-1 min-w-[200px]">
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
               Appeal Strength Score
             </p>
-            <div className={`mt-2 text-7xl font-bold tabular-nums leading-none ${gaugeColor(data.win_probability)}`}>
-              {Math.round(animatedScore)}
-              <span className="text-3xl text-slate-400">/100</span>
+            <h2 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+              {data.win_probability >= 70
+                ? "You have a strong case."
+                : data.win_probability >= 40
+                ? "This is worth filing."
+                : "It's a steep climb."}
+            </h2>
+            <div className="mt-3">
+              <ScoreBadge p={data.win_probability} />
             </div>
-            <p className="mt-2 text-sm text-slate-500">
-              Confidence in this estimate: {Math.round(data.confidence)}%
+            <p className="mt-3 text-sm text-slate-500">
+              Confidence in this estimate: <span className="font-semibold text-slate-700">{Math.round(data.confidence)}%</span>
             </p>
           </div>
-          <div className="flex flex-col items-end gap-1 text-right">
-            <ScoreBadge p={data.win_probability} />
-          </div>
         </div>
-        <ul className="mt-6 grid gap-2 sm:grid-cols-1">
+
+        <ul className="mt-6 grid gap-2">
           {data.win_reasons.map((r, i) => (
             <li
               key={i}
