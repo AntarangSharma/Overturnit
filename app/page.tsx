@@ -385,49 +385,124 @@ function SideAccents() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 hidden lg:block">
       {/* Giant watermark numerals at the far edges */}
-      <div className="absolute left-[-2rem] top-[24%] select-none text-[14rem] font-black leading-none tracking-tighter text-teal-900/[0.05] sm:text-[16rem]">
+      <div className="absolute left-[-2rem] top-[22%] select-none text-[14rem] font-black leading-none tracking-tighter text-teal-900/[0.05] sm:text-[16rem]">
         75
       </div>
-      <div className="absolute right-[-2rem] bottom-[10%] select-none text-[14rem] font-black leading-none tracking-tighter text-rose-900/[0.05] sm:text-[16rem]">
+      <div className="absolute right-[-2rem] bottom-[8%] select-none text-[14rem] font-black leading-none tracking-tighter text-rose-900/[0.05] sm:text-[16rem]">
         1%
+      </div>
+      <div className="absolute left-[6%] bottom-[6%] select-none text-[8rem] font-black leading-none tracking-tighter text-emerald-900/[0.06]">
+        ✓
+      </div>
+      <div className="absolute right-[8%] top-[3%] select-none font-mono text-[6rem] font-black leading-none tracking-tighter text-amber-900/[0.06]">
+        $
+      </div>
+
+      {/* Top-row stamp graphics */}
+      <div className="absolute left-[12%] top-[3%] -rotate-12 rounded-md border-2 border-rose-500/70 bg-white/60 px-3 py-1 font-mono text-xs font-black uppercase tracking-widest text-rose-700/80 shadow-sm">
+        Denied
+      </div>
+      <div className="absolute right-[14%] top-[6%] rotate-6 rounded-md border-2 border-emerald-500/70 bg-white/60 px-3 py-1 font-mono text-xs font-black uppercase tracking-widest text-emerald-700/80 shadow-sm">
+        Reversed
       </div>
 
       {/* Left-side floating chips */}
-      <div className="absolute left-[3%] top-[18%] -rotate-6 rounded-xl border border-teal-200 bg-white/70 px-3 py-2 shadow-md backdrop-blur">
+      <div className="absolute left-[3%] top-[16%] -rotate-6 rounded-xl border border-teal-200 bg-white/70 px-3 py-2 shadow-md backdrop-blur">
         <div className="text-[10px] font-semibold uppercase tracking-wider text-teal-700">Federal rule</div>
         <div className="font-mono text-sm font-bold text-slate-900">ACA §2719</div>
         <div className="mt-0.5 text-[11px] text-slate-600">External review · 4 months</div>
       </div>
-      <div className="absolute left-[5%] top-[42%] rotate-3 rounded-xl border border-emerald-200 bg-white/70 px-3 py-2 shadow-md backdrop-blur">
+      <div className="absolute left-[5%] top-[30%] rotate-2 w-[180px] rounded-xl border border-slate-200 bg-white/75 px-3 py-2 shadow-md backdrop-blur">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Anonymous · CA</div>
+        <div className="mt-0.5 text-[11px] italic leading-snug text-slate-700">&ldquo;Won my $2,847 MRI denial appeal in 6 days.&rdquo;</div>
+      </div>
+      <div className="absolute left-[5%] top-[44%] rotate-3 rounded-xl border border-emerald-200 bg-white/70 px-3 py-2 shadow-md backdrop-blur">
         <div className="text-[10px] font-semibold uppercase tracking-wider text-emerald-700">Self-funded plan</div>
         <div className="font-mono text-sm font-bold text-slate-900">ERISA §503</div>
         <div className="mt-0.5 text-[11px] text-slate-600">Full & fair review</div>
       </div>
-      <div className="absolute left-[2%] top-[66%] -rotate-3 rounded-xl border border-amber-200 bg-white/75 px-3 py-2 shadow-md backdrop-blur">
+      {/* Mini sparkline card */}
+      <div className="absolute left-[6%] top-[58%] -rotate-2 w-[160px] rounded-xl border border-slate-200 bg-white/80 p-2.5 shadow-md backdrop-blur">
+        <div className="flex items-baseline justify-between">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Wins this week</div>
+          <div className="text-xs font-bold text-emerald-700">+38%</div>
+        </div>
+        <svg viewBox="0 0 100 28" className="mt-1 h-7 w-full" aria-hidden>
+          <polyline
+            points="0,22 14,18 28,20 42,14 56,15 70,9 84,6 100,3"
+            fill="none"
+            stroke="rgb(5 150 105)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <polyline
+            points="0,22 14,18 28,20 42,14 56,15 70,9 84,6 100,3 100,28 0,28"
+            fill="rgba(5,150,105,0.12)"
+            stroke="none"
+          />
+        </svg>
+      </div>
+      <div className="absolute left-[2%] top-[72%] -rotate-3 rounded-xl border border-amber-200 bg-white/75 px-3 py-2 shadow-md backdrop-blur">
         <div className="text-[10px] font-semibold uppercase tracking-wider text-amber-700">Internal appeal</div>
         <div className="font-mono text-sm font-bold text-slate-900">180-day clock</div>
         <div className="mt-0.5 text-[11px] text-slate-600">From denial date</div>
       </div>
+      <div className="absolute left-[4%] top-[86%] rotate-1 rounded-xl border border-slate-200 bg-white/75 px-3 py-2 shadow-md backdrop-blur">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Patient cost in error</div>
+        <div className="font-mono text-base font-bold text-rose-700">$73B / year</div>
+      </div>
 
       {/* Right-side floating chips */}
-      <div className="absolute right-[3%] top-[22%] rotate-3 rounded-xl border border-cyan-200 bg-white/70 px-3 py-2 shadow-md backdrop-blur">
+      <div className="absolute right-[3%] top-[18%] rotate-3 rounded-xl border border-cyan-200 bg-white/70 px-3 py-2 shadow-md backdrop-blur">
         <div className="text-[10px] font-semibold uppercase tracking-wider text-cyan-700">No Surprises Act</div>
         <div className="font-mono text-sm font-bold text-slate-900">NSA §2799</div>
         <div className="mt-0.5 text-[11px] text-slate-600">Out-of-network protection</div>
+      </div>
+      <div className="absolute right-[5%] top-[32%] -rotate-2 w-[180px] rounded-xl border border-slate-200 bg-white/75 px-3 py-2 shadow-md backdrop-blur">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Anonymous · NY</div>
+        <div className="mt-0.5 text-[11px] italic leading-snug text-slate-700">&ldquo;Overturned a prior-auth denial for my MS infusion.&rdquo;</div>
       </div>
       <div className="absolute right-[4%] top-[46%] -rotate-2 rounded-xl border border-violet-200 bg-white/70 px-3 py-2 shadow-md backdrop-blur">
         <div className="text-[10px] font-semibold uppercase tracking-wider text-violet-700">Medicare</div>
         <div className="font-mono text-sm font-bold text-slate-900">42 CFR §422</div>
         <div className="mt-0.5 text-[11px] text-slate-600">Part C appeals</div>
       </div>
-      <div className="absolute right-[2%] top-[70%] rotate-6 rounded-xl border border-rose-200 bg-white/75 px-3 py-2 shadow-md backdrop-blur">
+      {/* Mini gauge card */}
+      <div className="absolute right-[6%] top-[60%] rotate-3 w-[160px] rounded-xl border border-slate-200 bg-white/80 p-2.5 shadow-md backdrop-blur">
+        <div className="flex items-center gap-2">
+          <svg viewBox="0 0 40 40" className="h-9 w-9 -rotate-90" aria-hidden>
+            <circle cx="20" cy="20" r="16" fill="none" stroke="rgb(226 232 240)" strokeWidth="5" />
+            <circle
+              cx="20"
+              cy="20"
+              r="16"
+              fill="none"
+              stroke="rgb(5 150 105)"
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeDasharray={`${2 * Math.PI * 16}`}
+              strokeDashoffset={`${2 * Math.PI * 16 * (1 - 0.72)}`}
+            />
+          </svg>
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Sample case</div>
+            <div className="font-mono text-sm font-bold text-emerald-700">Score 72</div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute right-[2%] top-[74%] rotate-6 rounded-xl border border-rose-200 bg-white/75 px-3 py-2 shadow-md backdrop-blur">
         <div className="text-[10px] font-semibold uppercase tracking-wider text-rose-700">Result</div>
         <div className="font-mono text-sm font-bold text-emerald-700">OVERTURNED</div>
         <div className="mt-0.5 text-[11px] text-slate-600">62% of internal appeals</div>
       </div>
+      <div className="absolute right-[5%] top-[88%] -rotate-2 rounded-xl border border-slate-200 bg-white/75 px-3 py-2 shadow-md backdrop-blur">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Avg. drafting time</div>
+        <div className="font-mono text-base font-bold text-teal-700">52 sec</div>
+      </div>
 
-      {/* Vertical accent lines with tick marks (right side) */}
-      <div className="absolute right-[7%] top-[12%] flex h-[420px] flex-col items-center gap-2">
+      {/* Vertical accent lines with tick marks (far right) */}
+      <div className="absolute right-[8%] top-[8%] flex h-[420px] flex-col items-center gap-2">
         <div className="text-[10px] font-mono font-semibold text-teal-700/70">DAY 0</div>
         <div className="h-full w-px bg-gradient-to-b from-teal-400/60 via-amber-400/40 to-rose-400/30" />
         <div className="text-[10px] font-mono font-semibold text-rose-700/70">DAY 180</div>
