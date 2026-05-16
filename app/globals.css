@@ -29,15 +29,65 @@ body {
   }
 }
 
+@keyframes drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -30px) scale(1.08); }
+}
+@keyframes drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-30px, 40px) scale(1.05); }
+}
+@keyframes drift-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(20px, 30px) scale(1.06); }
+}
+
 .reveal {
   opacity: 0;
   animation: reveal-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+.drift-a { animation: drift-a 18s ease-in-out infinite; }
+.drift-b { animation: drift-b 22s ease-in-out infinite; }
+.drift-c { animation: drift-c 26s ease-in-out infinite; }
+
+/* Dot-grid pattern */
+.bg-dotgrid {
+  background-image: radial-gradient(rgba(15, 118, 110, 0.16) 1.1px, transparent 1.1px);
+  background-size: 22px 22px;
+  background-position: 0 0;
+}
+
+/* Marker highlight for emphasized word in headline */
+.marker {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  padding: 0 0.15em;
+}
+.marker::before {
+  content: "";
+  position: absolute;
+  inset: 18% -4% 6% -4%;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(253, 224, 71, 0.85), rgba(250, 204, 21, 0.8));
+  transform: skewY(-2deg) rotate(-1deg);
+  border-radius: 6px;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,0.04));
+}
+
+/* Subtle noise overlay for grain */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/></svg>");
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
+  .reveal { animation: none; opacity: 1; transform: none; }
+  .drift-a, .drift-b, .drift-c { animation: none; }
 }

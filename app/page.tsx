@@ -92,34 +92,78 @@ export default function Home() {
   }
 
   return (
-    <main className="relative flex-1 overflow-hidden text-slate-900">
-      {/* Ambient background */}
+    <main className="grain relative flex-1 overflow-hidden text-slate-900">
+      {/* Base saturated gradient */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-teal-50 via-slate-50 to-white"
+        className="pointer-events-none absolute inset-0 -z-30 bg-gradient-to-br from-teal-100 via-emerald-50 to-slate-50"
+      />
+      {/* Dot grid overlay */}
+      <div
+        aria-hidden
+        className="bg-dotgrid pointer-events-none absolute inset-0 -z-20 opacity-70 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]"
+      />
+      {/* Animated gradient orbs */}
+      <div
+        aria-hidden
+        className="drift-a pointer-events-none absolute -top-32 -right-32 -z-10 h-[520px] w-[520px] rounded-full bg-teal-300/55 blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-40 -right-40 -z-10 h-[480px] w-[480px] rounded-full bg-teal-200/40 blur-3xl"
+        className="drift-b pointer-events-none absolute top-1/3 -left-40 -z-10 h-[460px] w-[460px] rounded-full bg-emerald-300/45 blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-40 -left-40 -z-10 h-[420px] w-[420px] rounded-full bg-emerald-200/30 blur-3xl"
+        className="drift-c pointer-events-none absolute -bottom-40 right-1/4 -z-10 h-[380px] w-[380px] rounded-full bg-cyan-200/40 blur-3xl"
       />
 
-      <div className="mx-auto max-w-3xl px-5 py-12 sm:py-20">
+      {/* Decorative document SVG behind the hero */}
+      <svg
+        aria-hidden
+        viewBox="0 0 600 720"
+        className="pointer-events-none absolute -top-10 left-1/2 -z-10 h-[640px] w-[520px] -translate-x-1/2 opacity-[0.07] sm:opacity-[0.09]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <rect x="80" y="40" width="440" height="640" rx="14" className="text-teal-900" />
+        <line x1="120" y1="120" x2="480" y2="120" className="text-teal-900" />
+        <line x1="120" y1="160" x2="420" y2="160" className="text-teal-900" />
+        <line x1="120" y1="200" x2="460" y2="200" className="text-teal-900" />
+        <line x1="120" y1="260" x2="480" y2="260" className="text-teal-900" />
+        <line x1="120" y1="300" x2="440" y2="300" className="text-teal-900" />
+        <line x1="120" y1="340" x2="400" y2="340" className="text-teal-900" />
+        <line x1="120" y1="380" x2="470" y2="380" className="text-teal-900" />
+        <line x1="120" y1="440" x2="440" y2="440" className="text-teal-900" />
+        <line x1="120" y1="480" x2="380" y2="480" className="text-teal-900" />
+        {/* Red "DENIED" stamp, struck through */}
+        <g transform="translate(330 230) rotate(-14)" className="text-rose-600" strokeWidth="3">
+          <rect x="-90" y="-30" width="180" height="60" rx="6" />
+          <text x="0" y="8" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="28" fontWeight="800" fill="currentColor" stroke="none">DENIED</text>
+        </g>
+        {/* Green checkmark overlay */}
+        <g transform="translate(380 480)" className="text-emerald-600" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="0" cy="0" r="42" />
+          <path d="M -18 2 L -4 16 L 22 -12" fill="none" />
+        </g>
+      </svg>
+
+      <div className="relative mx-auto max-w-3xl px-5 py-12 sm:py-20">
         {/* Hero */}
         <header className="text-center">
-          <p className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-800 backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-teal-500" />
+          <p className="inline-flex items-center gap-2 rounded-full border border-teal-300/70 bg-white/80 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-teal-800 shadow-sm backdrop-blur">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-500" />
+            </span>
             OverturnIt
           </p>
-          <h1 className="mt-5 text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-            Insurance denied your claim?
+          <h1 className="mt-6 text-balance text-4xl font-bold leading-[1.04] tracking-tight sm:text-6xl">
+            Insurance <span className="marker">denied</span> your claim?
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-balance text-lg text-slate-600 sm:text-xl">
+          <p className="mx-auto mt-6 max-w-xl text-balance text-lg text-slate-700 sm:text-xl">
             Paste the letter. We tell you if it&apos;ll be overturned —{" "}
-            <span className="font-medium text-slate-800">and draft the appeal.</span>{" "}
+            <span className="font-semibold text-slate-900">and draft the appeal.</span>{" "}
             In 60 seconds. Free.
           </p>
         </header>
@@ -131,10 +175,11 @@ export default function Home() {
           <Stat number="<1%" label="ever appeal" tone="rose" />
         </div>
 
-        {/* Form card */}
+        {/* Form card with gradient ring */}
+        <div className="mt-10 rounded-[1.25rem] bg-gradient-to-br from-teal-500/40 via-emerald-400/30 to-cyan-400/30 p-px shadow-2xl shadow-teal-900/[0.08]">
         <form
           onSubmit={onSubmit}
-          className="mt-10 space-y-5 rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-xl shadow-teal-900/[0.04] backdrop-blur sm:p-8"
+          className="space-y-5 rounded-[1.15rem] border border-white/60 bg-white/85 p-6 backdrop-blur-md sm:p-8"
         >
           <div>
             <div className="flex items-baseline justify-between gap-3">
@@ -201,6 +246,7 @@ export default function Home() {
             </div>
           )}
         </form>
+        </div>
 
         {/* How it works */}
         <section className="mt-14">
@@ -226,15 +272,32 @@ export default function Home() {
 
 function Stat({ number, label, tone }: { number: string; label: string; tone: "emerald" | "amber" | "rose" }) {
   const tones = {
-    emerald: "from-emerald-50 to-white text-emerald-700 ring-emerald-200",
-    amber: "from-amber-50 to-white text-amber-700 ring-amber-200",
-    rose: "from-rose-50 to-white text-rose-700 ring-rose-200",
+    emerald: {
+      bg: "from-emerald-50 to-white",
+      num: "text-emerald-700",
+      ring: "ring-emerald-200",
+      bar: "from-emerald-400 to-emerald-600",
+    },
+    amber: {
+      bg: "from-amber-50 to-white",
+      num: "text-amber-700",
+      ring: "ring-amber-200",
+      bar: "from-amber-400 to-amber-600",
+    },
+    rose: {
+      bg: "from-rose-50 to-white",
+      num: "text-rose-700",
+      ring: "ring-rose-200",
+      bar: "from-rose-400 to-rose-600",
+    },
   } as const;
+  const t = tones[tone];
   return (
     <div
-      className={`rounded-xl bg-gradient-to-br p-4 text-center shadow-sm ring-1 sm:p-5 ${tones[tone]}`}
+      className={`relative overflow-hidden rounded-xl bg-gradient-to-br p-4 text-center shadow-sm ring-1 backdrop-blur-sm sm:p-5 ${t.bg} ${t.ring}`}
     >
-      <div className="text-3xl font-bold tabular-nums tracking-tight sm:text-5xl">{number}</div>
+      <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${t.bar}`} />
+      <div className={`text-3xl font-bold tabular-nums tracking-tight sm:text-5xl ${t.num}`}>{number}</div>
       <div className="mt-1 text-xs font-medium text-slate-600 sm:text-sm">{label}</div>
     </div>
   );
