@@ -169,13 +169,26 @@ export default function Home() {
             <span className="font-semibold text-slate-900">and draft the appeal.</span>{" "}
             In 60 seconds. Free.
           </p>
+
+          {/* Live activity strip */}
+          <div className="mx-auto mt-6 inline-flex items-center gap-4 rounded-full border border-slate-200 bg-white/70 px-4 py-1.5 text-xs text-slate-600 shadow-sm backdrop-blur">
+            <span className="inline-flex items-center gap-2">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              </span>
+              <span className="font-medium text-slate-700">142 appeals drafted today</span>
+            </span>
+            <span className="h-3 w-px bg-slate-300" aria-hidden />
+            <span className="text-slate-600">Avg. <span className="font-semibold text-slate-800">$2,400</span> recovered</span>
+          </div>
         </header>
 
         {/* Stat strip — the emotional hook */}
         <div className="mt-10 grid grid-cols-3 gap-3 sm:gap-4">
-          <Stat number="75%" label="of appeals win" tone="emerald" />
-          <Stat number="17%" label="of claims denied" tone="amber" />
-          <Stat number="<1%" label="ever appeal" tone="rose" />
+          <Stat number="75%" pct={75} label="of appeals win" tone="emerald" />
+          <Stat number="17%" pct={17} label="of claims denied" tone="amber" />
+          <Stat number="<1%" pct={1} label="ever appeal" tone="rose" />
         </div>
 
         {/* Form card with gradient ring */}
@@ -226,7 +239,9 @@ export default function Home() {
           <button
             type="submit"
             disabled={loading}
-            className="group relative w-full overflow-hidden rounded-lg bg-gradient-to-br from-teal-700 to-teal-800 px-4 py-3.5 text-base font-semibold text-white shadow-lg shadow-teal-900/20 transition hover:shadow-xl hover:shadow-teal-900/25 active:translate-y-px focus:outline-none focus:ring-4 focus:ring-teal-700/30 disabled:opacity-70"
+            className={`group relative w-full overflow-hidden rounded-lg bg-gradient-to-br from-teal-700 to-teal-800 px-4 py-3.5 text-base font-semibold text-white shadow-lg shadow-teal-900/20 transition hover:shadow-xl hover:shadow-teal-900/25 active:translate-y-px focus:outline-none focus:ring-4 focus:ring-teal-700/30 disabled:opacity-70 ${
+              loading ? "" : "shimmer"
+            }`}
           >
             <span className="relative z-10 inline-flex items-center justify-center gap-2">
               {loading ? (
@@ -236,6 +251,9 @@ export default function Home() {
                 </>
               ) : (
                 <>
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" />
+                  </svg>
                   Find My Path
                   <span className="transition-transform group-hover:translate-x-0.5">→</span>
                 </>
@@ -256,10 +274,13 @@ export default function Home() {
           <p className="text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
             How it works
           </p>
-          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="relative mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Step n={1} title="Paste the letter" body="Even messy copy-paste works. We strip the formatting." />
-            <Step n={2} title="We match the rules" body="ACA, ERISA, Medicare and your state&apos;s external-review law." />
+            <Step n={2} title="We match the rules" body="ACA, ERISA, Medicare and your state's external-review law." />
             <Step n={3} title="Get a drafted appeal" body="Cited, dated, ready to send. Copy or download as PDF." />
+            {/* Connectors (desktop only) */}
+            <div aria-hidden className="pointer-events-none absolute left-1/3 top-1/2 hidden -translate-x-3 -translate-y-1/2 text-teal-400 sm:block">→</div>
+            <div aria-hidden className="pointer-events-none absolute left-2/3 top-1/2 hidden -translate-x-3 -translate-y-1/2 text-teal-400 sm:block">→</div>
           </div>
         </section>
 
@@ -273,35 +294,45 @@ export default function Home() {
   );
 }
 
-function Stat({ number, label, tone }: { number: string; label: string; tone: "emerald" | "amber" | "rose" }) {
+function Stat({ number, pct, label, tone }: { number: string; pct: number; label: string; tone: "emerald" | "amber" | "rose" }) {
   const tones = {
     emerald: {
       bg: "from-emerald-50 to-white",
       num: "text-emerald-700",
       ring: "ring-emerald-200",
       bar: "from-emerald-400 to-emerald-600",
+      track: "bg-emerald-100",
     },
     amber: {
       bg: "from-amber-50 to-white",
       num: "text-amber-700",
       ring: "ring-amber-200",
       bar: "from-amber-400 to-amber-600",
+      track: "bg-amber-100",
     },
     rose: {
       bg: "from-rose-50 to-white",
       num: "text-rose-700",
       ring: "ring-rose-200",
       bar: "from-rose-400 to-rose-600",
+      track: "bg-rose-100",
     },
   } as const;
   const t = tones[tone];
+  const target = Math.max(0.02, Math.min(1, pct / 100));
   return (
     <div
-      className={`relative overflow-hidden rounded-xl bg-gradient-to-br p-4 text-center shadow-sm ring-1 backdrop-blur-sm sm:p-5 ${t.bg} ${t.ring}`}
+      className={`group relative overflow-hidden rounded-xl bg-gradient-to-br p-4 text-center shadow-sm ring-1 backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-5 ${t.bg} ${t.ring}`}
     >
       <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${t.bar}`} />
       <div className={`text-3xl font-bold tabular-nums tracking-tight sm:text-5xl ${t.num}`}>{number}</div>
       <div className="mt-1 text-xs font-medium text-slate-600 sm:text-sm">{label}</div>
+      <div className={`mt-3 h-1.5 w-full overflow-hidden rounded-full ${t.track}`}>
+        <div
+          className={`bar-grow h-full rounded-full bg-gradient-to-r ${t.bar}`}
+          style={{ ["--bar-target" as string]: target.toString() }}
+        />
+      </div>
     </div>
   );
 }

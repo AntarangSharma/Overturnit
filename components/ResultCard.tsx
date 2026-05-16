@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { OverturnResultT } from "@/lib/schema";
 
 function gaugeColor(p: number) {
@@ -36,7 +36,20 @@ function useCountUp(target: number, ms = 900) {
 export default function ResultCard({ data }: { data: OverturnResultT }) {
   const [copied, setCopied] = useState(false);
   const [pdfBusy, setPdfBusy] = useState(false);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const gaugeRef = useRef<HTMLElement | null>(null);
   const animatedScore = useCountUp(data.win_probability);
+
+  useEffect(() => {
+    const el = gaugeRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0),
+      { threshold: 0 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   async function copyLetter() {
     await navigator.clipboard.writeText(data.appeal_letter);
@@ -72,9 +85,34 @@ export default function ResultCard({ data }: { data: OverturnResultT }) {
   }
 
   const today = new Date().toISOString().slice(0, 10);
+  const refCode = (() => {
+    let h = 0;
+    for (const c of data.denial_reason) h = (h * 31 + c.charCodeAt(0)) | 0;
+    return Math.abs(h).toString(36).slice(0, 6).toUpperCase().padEnd(6, "X");
+  })();
 
   return (
     <div className="relative mx-auto max-w-3xl px-5 py-10">
+      {/* Sticky condensed score bar */}
+      <div
+        className={`fixed inset-x-0 top-0 z-40 border-b border-slate-200 bg-white/85 backdrop-blur transition-all duration-300 ${
+          showStickyBar ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+        }`}
+      >
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-5 py-2.5">
+          <div className="flex items-center gap-3">
+            <div className={`text-xl font-bold tabular-nums leading-none ${gaugeColor(data.win_probability)}`}>
+              {Math.round(data.win_probability)}<span className="text-xs text-slate-400">/100</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Appeal Strength</span>
+              <span className="text-xs font-medium text-slate-800 line-clamp-1">{data.denial_reason.slice(0, 60)}{data.denial_reason.length > 60 ? "…" : ""}</span>
+            </div>
+          </div>
+          <a href="/" className="text-xs font-medium text-teal-700 hover:underline">New appeal</a>
+        </div>
+      </div>
+
       <header className="reveal" style={{ animationDelay: "0ms" }}>
         <a href="/" className="text-sm font-medium text-teal-700 hover:underline">
           ← New appeal
@@ -86,6 +124,7 @@ export default function ResultCard({ data }: { data: OverturnResultT }) {
 
       {/* Gauge */}
       <section
+        ref={gaugeRef}
         className={`reveal mt-8 rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-lg shadow-teal-900/[0.05] backdrop-blur ring-1 ${gaugeRing(data.win_probability)}`}
         style={{ animationDelay: "60ms" }}
       >
@@ -180,7 +219,7 @@ export default function ResultCard({ data }: { data: OverturnResultT }) {
 
       {/* Letter */}
       <section
-        className="reveal mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        className="reveal mt-6 rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm backdrop-blur"
         style={{ animationDelay: "220ms" }}
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -201,42 +240,94 @@ export default function ResultCard({ data }: { data: OverturnResultT }) {
             </button>
           </div>
         </div>
-        <pre className="mt-4 max-h-[480px] overflow-auto whitespace-pre-wrap rounded-lg bg-slate-50 p-4 font-mono text-sm leading-relaxed text-slate-900 ring-1 ring-slate-200">
+
+        {/* Faux letterhead container */}
+        <div className="mt-4 overflow-hidden rounded-lg border border-slate-300 bg-white shadow-inner">
+          <div className="flex items-center justify-between border-b-2 border-double border-slate-800 bg-gradient-to-r from-slate-50 to-white px-5 py-3">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-teal-700 text-base font-black text-white">O</div>
+              <div>
+                <div className="text-sm font-bold tracking-tight text-slate-900">OverturnIt — Appeal Draft</div>
+                <div className="text-[10px] uppercase tracking-wider text-slate-500">Generated {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>
+              </div>
+            </div>
+            <div className="hidden sm:block rounded-md border border-slate-300 bg-white px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-slate-600">
+              Ref / {refCode}
+            </div>
+          </div>
+          <pre className="relative max-h-[480px] overflow-auto whitespace-pre-wrap bg-[linear-gradient(transparent_31px,rgba(15,118,110,0.06)_32px)] bg-[size:100%_32px] p-5 pl-10 font-mono text-sm leading-8 text-slate-900">
 {data.appeal_letter}
-        </pre>
+          </pre>
+        </div>
       </section>
 
-      {/* Deadlines */}
+      {/* Deadlines — visual timeline */}
       <section
-        className="reveal mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        className="reveal mt-6 rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm backdrop-blur"
         style={{ animationDelay: "300ms" }}
       >
-        <h2 className="text-lg font-semibold">Deadlines & next steps</h2>
-        <ol className="mt-4 space-y-3">
-          {data.deadlines.map((d, i) => {
-            const overdue = d.by_date < today;
-            return (
-              <li
-                key={i}
-                className="flex flex-wrap items-baseline justify-between gap-3 border-b border-slate-100 pb-3 last:border-b-0"
-              >
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-slate-900">{d.action}</p>
-                  <p className="text-xs text-slate-500">Source: {d.source}</p>
-                </div>
-                <span
-                  className={
-                    "rounded-md px-2 py-0.5 text-sm font-mono " +
-                    (overdue
-                      ? "bg-red-50 text-red-700 ring-1 ring-red-200"
-                      : "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200")
-                  }
-                >
-                  {d.by_date}
-                </span>
-              </li>
-            );
-          })}
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Deadlines & next steps</h2>
+          <span className="text-xs font-medium text-slate-500">{data.deadlines.length} action{data.deadlines.length === 1 ? "" : "s"}</span>
+        </div>
+
+        <ol className="relative mt-5">
+          {/* Vertical track */}
+          <div aria-hidden className="absolute left-[11px] top-2 bottom-2 w-px bg-gradient-to-b from-teal-400 via-amber-400 to-rose-400" />
+          {[...data.deadlines]
+            .sort((a, b) => a.by_date.localeCompare(b.by_date))
+            .map((d, i) => {
+              const overdue = d.by_date < today;
+              const days = Math.round((new Date(d.by_date).getTime() - new Date(today).getTime()) / 86400000);
+              return (
+                <li key={i} className="relative mb-5 pl-10 last:mb-0">
+                  {/* Node dot */}
+                  <span
+                    className={
+                      "absolute left-0 top-1 flex h-6 w-6 items-center justify-center rounded-full ring-4 ring-white " +
+                      (overdue
+                        ? "bg-rose-500"
+                        : days <= 14
+                        ? "bg-amber-500"
+                        : "bg-emerald-500")
+                    }
+                    aria-hidden
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                  </span>
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                    <p className="text-sm font-semibold text-slate-900">{d.action}</p>
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={
+                          "rounded-md px-2 py-0.5 font-mono text-xs " +
+                          (overdue
+                            ? "bg-rose-50 text-rose-700 ring-1 ring-rose-200"
+                            : days <= 14
+                            ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200"
+                            : "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200")
+                        }
+                      >
+                        {d.by_date}
+                      </span>
+                      <span
+                        className={
+                          "text-[11px] font-medium " +
+                          (overdue ? "text-rose-700" : "text-slate-500")
+                        }
+                      >
+                        {overdue
+                          ? `${Math.abs(days)}d overdue`
+                          : days === 0
+                          ? "today"
+                          : `in ${days}d`}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-500">{d.source}</p>
+                </li>
+              );
+            })}
         </ol>
       </section>
 
