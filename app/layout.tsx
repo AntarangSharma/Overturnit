@@ -13,14 +13,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://overturnit.vercel.app"),
   title: "OverturnIt — Spell check for health insurance denials",
   description:
     "Paste your denial letter. We tell you whether it will be overturned and draft the appeal — in 60 seconds, free.",
   openGraph: {
-    title: "OverturnIt",
+    title: "OverturnIt — Spell check for health insurance denials",
     description:
-      "Spell check for health insurance denials. 75% of appeals win. Less than 1% are filed.",
+      "75% of appeals win. Less than 1% are filed. Paste your denial — get a drafted appeal in 60 seconds.",
     type: "website",
+    url: "https://overturnit.vercel.app",
+    siteName: "OverturnIt",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OverturnIt — Spell check for health insurance denials",
+    description:
+      "75% of appeals win. Less than 1% are filed. Paste your denial — get a drafted appeal in 60 seconds.",
   },
 };
 

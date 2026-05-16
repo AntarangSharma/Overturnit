@@ -168,8 +168,28 @@ export default function ResultCard({ data }: { data: OverturnResultT }) {
       {/* Share */}
       <section className="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
         <p className="text-sm text-slate-700">
-          Send <span className="font-semibold">overturnit.app</span> to anyone fighting a denial.
+          Know someone fighting a denial? Send them OverturnIt.
         </p>
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+              "75% of health-insurance appeals win, but <1% are filed. OverturnIt drafts yours in 60 seconds:"
+            )}&url=${encodeURIComponent("https://overturnit.vercel.app")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-800"
+          >
+            Share on X
+          </a>
+          <a
+            href={`sms:?&body=${encodeURIComponent(
+              "If you ever get a denial letter from your insurance, paste it into https://overturnit.vercel.app — it drafts the appeal."
+            )}`}
+            className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-50"
+          >
+            Send via SMS
+          </a>
+        </div>
       </section>
 
       <p className="text-xs leading-relaxed text-slate-500">{data.disclaimer}</p>

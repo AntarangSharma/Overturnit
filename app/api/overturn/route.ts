@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     const create = (model: string, useCache: boolean) =>
       client.messages.create({
         model,
-        max_tokens: 3500,
+        max_tokens: 4000,
         temperature: 0.2,
         system: useCache
           ? [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }]
