@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OverturnIt
 
-## Getting Started
+**Spell check for health insurance denials.**
 
-First, run the development server:
+Paste a denial letter, get back a win-probability score + a drafted appeal letter that cites the federal/state rules the insurer broke. Free. ~60 seconds.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Why
+
+- ~17% of in-network claims are denied.
+- ~75% of internal appeals win.
+- <1% of denied patients ever file one.
+
+The asymmetry isn't knowledge — it's paperwork. OverturnIt removes the paperwork barrier.
+
+## Stack
+
+- **Next.js 16** (App Router) + TypeScript + Tailwind v4
+- **Anthropic Claude Sonnet 4.6** (with 4.5 fallback) — single call per request
+- **Prompt caching** on the federal corpus + state cheat sheet (~90% cost reduction after first call)
+- **@react-pdf/renderer** for downloadable appeal letter PDFs
+- **Vercel** — Node runtime, stateless, no DB, no auth, no PHI persistence
+
+## Architecture
+
+```
+User browser
+  ↓
+Next.js App Router (Vercel)
+  ├── /              landing + 3-step form
+  ├── /result        renders ResultCard from sessionStorage
+  └── /api/overturn  POST → Anthropic Messages API
+                     system = federal corpus + state cheat sheet (cached)
+                     output = strict JSON
+  ↓
+ResultCard.tsx (gauge + letter + deadlines)
+  ↓
+@react-pdf/renderer → Appeal.pdf
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Run locally
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cp .env.example .env.local   # add your ANTHROPIC_API_KEY
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open http://localhost:3000.
 
-## Learn More
+Smoke test the API:
+```bash
+curl -X POST http://localhost:3000/api/overturn \
+  -H 'content-type: application/json' \
+  -d '{
+    "denial_text": "Your claim for MRI is denied as not medically necessary per InterQual.",
+    "state": "CA",
+    "plan_type": "Employer",
+    "service_category": "Medical necessity denied"
+  }' | jq .
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Deploy to Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Push this repo to GitHub.
+2. Import on vercel.com → New Project.
+3. Add `ANTHROPIC_API_KEY` env var (Production + Preview).
+4. Deploy.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Disclaimer
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+OverturnIt is a drafting tool, not legal advice. It does not establish an attorney–client relationship. Consult a licensed professional for your specific situation.
