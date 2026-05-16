@@ -27,6 +27,24 @@ const LOADING_MESSAGES = [
   "Drafting your appeal…",
 ];
 
+const SAMPLE_DENIAL = `Re: Claim # 4827-9912-3X
+Date of service: 04/12/2026
+Member: [redacted]
+Provider: Pacific Imaging Group
+
+Dear Member,
+
+We have completed our review of your claim for MRI of the lumbar spine with contrast (CPT 72149) performed on 04/12/2026. After clinical review applying InterQual guidelines for low back pain, this service has been determined to be NOT MEDICALLY NECESSARY.
+
+Per our medical policy MPG-128 (Imaging for Acute Low Back Pain), MRI of the lumbar spine is considered appropriate only after a documented six-week trial of conservative therapy including physical therapy. Our records reflect the trial commenced on 02/27/2026 and the MRI was ordered on 04/04/2026, prior to completion of the six-week window.
+
+You are responsible for the billed amount of $2,847.00.
+
+If you disagree with this determination, you may request an internal appeal within 180 days. Please refer to the back of this letter for appeal instructions.
+
+Sincerely,
+Member Services`;
+
 export default function Home() {
   const router = useRouter();
   const [denial, setDenial] = useState("");
@@ -74,95 +92,85 @@ export default function Home() {
   }
 
   return (
-    <main className="flex-1 bg-slate-50 text-slate-900">
-      <div className="mx-auto max-w-2xl px-5 py-10 sm:py-16">
-        <header className="mb-8">
-          <p className="text-sm font-medium tracking-wide text-teal-700 uppercase">
+    <main className="relative flex-1 overflow-hidden text-slate-900">
+      {/* Ambient background */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-teal-50 via-slate-50 to-white"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-40 -right-40 -z-10 h-[480px] w-[480px] rounded-full bg-teal-200/40 blur-3xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-40 -left-40 -z-10 h-[420px] w-[420px] rounded-full bg-emerald-200/30 blur-3xl"
+      />
+
+      <div className="mx-auto max-w-3xl px-5 py-12 sm:py-20">
+        {/* Hero */}
+        <header className="text-center">
+          <p className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-800 backdrop-blur">
+            <span className="h-1.5 w-1.5 rounded-full bg-teal-500" />
             OverturnIt
           </p>
-          <h1 className="mt-3 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+          <h1 className="mt-5 text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
             Insurance denied your claim?
           </h1>
-          <p className="mt-4 text-lg text-slate-600">
-            Paste your denial. We tell you whether it will be overturned —
-            and draft the appeal. Free. 60 seconds.
+          <p className="mx-auto mt-5 max-w-xl text-balance text-lg text-slate-600 sm:text-xl">
+            Paste the letter. We tell you if it&apos;ll be overturned —{" "}
+            <span className="font-medium text-slate-800">and draft the appeal.</span>{" "}
+            In 60 seconds. Free.
           </p>
         </header>
 
-        <div className="mb-8 rounded-lg border border-slate-200 bg-white p-4 text-center text-sm text-slate-700 shadow-sm">
-          <span className="font-semibold">17%</span> of claims denied
-          <span className="mx-2 text-slate-300">·</span>
-          <span className="font-semibold">75%</span> of appeals win
-          <span className="mx-2 text-slate-300">·</span>
-          <span className="font-semibold">1%</span> of patients file
+        {/* Stat strip — the emotional hook */}
+        <div className="mt-10 grid grid-cols-3 gap-3 sm:gap-4">
+          <Stat number="75%" label="of appeals win" tone="emerald" />
+          <Stat number="17%" label="of claims denied" tone="amber" />
+          <Stat number="<1%" label="ever appeal" tone="rose" />
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-5">
+        {/* Form card */}
+        <form
+          onSubmit={onSubmit}
+          className="mt-10 space-y-5 rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-xl shadow-teal-900/[0.04] backdrop-blur sm:p-8"
+        >
           <div>
-            <label htmlFor="denial" className="block text-sm font-medium text-slate-800">
-              Paste your denial letter
-            </label>
+            <div className="flex items-baseline justify-between gap-3">
+              <label htmlFor="denial" className="block text-sm font-semibold text-slate-900">
+                Paste your denial letter
+              </label>
+              <button
+                type="button"
+                onClick={() => setDenial(SAMPLE_DENIAL)}
+                className="text-xs font-medium text-teal-700 underline-offset-2 hover:underline"
+              >
+                Try a sample →
+              </button>
+            </div>
             <textarea
               id="denial"
               required
-              rows={10}
+              rows={9}
               value={denial}
               onChange={(e) => setDenial(e.target.value)}
               placeholder="Re: Claim # 4827-9912-3X..."
-              className="mt-2 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600/20"
+              className="mt-2 w-full resize-y rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm shadow-inner shadow-slate-100 focus:border-teal-600 focus:outline-none focus:ring-4 focus:ring-teal-600/15"
             />
+            <p className="mt-1.5 text-xs text-slate-500">
+              Tip: redact your name, member ID, and date of birth before pasting.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div>
-              <label htmlFor="state" className="block text-sm font-medium text-slate-800">
-                State
-              </label>
-              <select
-                id="state"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-                className="mt-2 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600/20"
-              >
-                {STATES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="plan" className="block text-sm font-medium text-slate-800">
-                Plan type
-              </label>
-              <select
-                id="plan"
-                value={planType}
-                onChange={(e) => setPlanType(e.target.value)}
-                className="mt-2 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600/20"
-              >
-                {PLAN_TYPES.map((p) => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="service" className="block text-sm font-medium text-slate-800">
-                What was denied
-              </label>
-              <select
-                id="service"
-                value={serviceCategory}
-                onChange={(e) => setServiceCategory(e.target.value)}
-                className="mt-2 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600/20"
-              >
-                {SERVICE_CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-            </div>
+            <FieldSelect id="state" label="State" value={state} onChange={setState} options={STATES} />
+            <FieldSelect id="plan" label="Plan type" value={planType} onChange={setPlanType} options={PLAN_TYPES} />
+            <FieldSelect id="service" label="What was denied" value={serviceCategory} onChange={setServiceCategory} options={SERVICE_CATEGORIES} />
           </div>
 
           {error && (
-            <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
               {error}
             </div>
           )}
@@ -170,24 +178,108 @@ export default function Home() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-md bg-teal-700 px-4 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-700 focus:ring-offset-2 disabled:opacity-60"
+            className="group relative w-full overflow-hidden rounded-lg bg-gradient-to-br from-teal-700 to-teal-800 px-4 py-3.5 text-base font-semibold text-white shadow-lg shadow-teal-900/20 transition hover:shadow-xl hover:shadow-teal-900/25 active:translate-y-px focus:outline-none focus:ring-4 focus:ring-teal-700/30 disabled:opacity-70"
           >
-            {loading ? LOADING_MESSAGES[messageIdx] : "Find My Path  →"}
+            <span className="relative z-10 inline-flex items-center justify-center gap-2">
+              {loading ? (
+                <>
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                  {LOADING_MESSAGES[messageIdx]}
+                </>
+              ) : (
+                <>
+                  Find My Path
+                  <span className="transition-transform group-hover:translate-x-0.5">→</span>
+                </>
+              )}
+            </span>
           </button>
 
           {loading && (
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
-              <div className="h-full w-1/3 animate-pulse bg-teal-600"></div>
+              <div className="h-full w-2/5 animate-pulse rounded-full bg-gradient-to-r from-teal-500 to-emerald-500" />
             </div>
           )}
         </form>
 
-        <p className="mt-10 text-xs leading-relaxed text-slate-500">
+        {/* How it works */}
+        <section className="mt-14">
+          <p className="text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
+            How it works
+          </p>
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <Step n={1} title="Paste the letter" body="Even messy copy-paste works. We strip the formatting." />
+            <Step n={2} title="We match the rules" body="ACA, ERISA, Medicare and your state&apos;s external-review law." />
+            <Step n={3} title="Get a drafted appeal" body="Cited, dated, ready to send. Copy or download as PDF." />
+          </div>
+        </section>
+
+        <p className="mt-14 text-center text-xs leading-relaxed text-slate-500">
           OverturnIt is a drafting tool, not legal advice. We store nothing —
           your denial letter never leaves the request that generates your appeal.
           Consult a licensed professional for your specific situation.
         </p>
       </div>
     </main>
+  );
+}
+
+function Stat({ number, label, tone }: { number: string; label: string; tone: "emerald" | "amber" | "rose" }) {
+  const tones = {
+    emerald: "from-emerald-50 to-white text-emerald-700 ring-emerald-200",
+    amber: "from-amber-50 to-white text-amber-700 ring-amber-200",
+    rose: "from-rose-50 to-white text-rose-700 ring-rose-200",
+  } as const;
+  return (
+    <div
+      className={`rounded-xl bg-gradient-to-br p-4 text-center shadow-sm ring-1 sm:p-5 ${tones[tone]}`}
+    >
+      <div className="text-3xl font-bold tabular-nums tracking-tight sm:text-5xl">{number}</div>
+      <div className="mt-1 text-xs font-medium text-slate-600 sm:text-sm">{label}</div>
+    </div>
+  );
+}
+
+function FieldSelect({
+  id,
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: readonly string[];
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className="block text-sm font-semibold text-slate-900">
+        {label}
+      </label>
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-teal-600 focus:outline-none focus:ring-4 focus:ring-teal-600/15"
+      >
+        {options.map((o) => (
+          <option key={o} value={o}>{o}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+function Step({ n, title, body }: { n: number; title: string; body: string }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white/70 p-5 backdrop-blur">
+      <div className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-xs font-bold text-white">
+        {n}
+      </div>
+      <h3 className="mt-3 text-sm font-semibold text-slate-900">{title}</h3>
+      <p className="mt-1 text-sm text-slate-600">{body}</p>
+    </div>
   );
 }
